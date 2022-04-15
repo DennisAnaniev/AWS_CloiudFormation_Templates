@@ -1,0 +1,22 @@
+Resources:
+  Ec2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-06ec8443c2a35b0ba # Amazon Linux AMI in Sydney
+      Tags:
+        - Key: "Name"
+          Value: !Join [ " ", [ EC2, Instance, with, Fn, Join ] ]
+      SecurityGroups:
+        - !Ref AllowSSHtoEC2Instance
+
+  AllowSSHtoEC2Instance:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: AllowSSHtoEC2Instance
+      GroupDescription: Allow connect to VM via 22 port
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
