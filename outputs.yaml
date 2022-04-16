@@ -1,0 +1,42 @@
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0b0af3577fe5e3532
+    eu-cetral-1:
+      AMI: ami-06ec8443c2a35b0ba
+
+Resources:
+  Ec2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: t2.micro
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI  # Amazon Linux AMI in Sydney
+      Tags:
+        - Key: "Name"
+          Value: !Join
+              - ""
+              - - "EC2 Instance "
+                - !Ref AWS::Region
+      SecurityGroups:
+        - !Ref AllowSSHtoEC2Instance
+
+  AllowSSHtoEC2Instance:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: AllowSSHtoEC2Instance
+      GroupDescription: Allow connect to VM via 22 port
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+Outputs:
+  ServerDNS:
+    Description: Information about the DNS
+    Value: !GetAtt
+      - Ec2Instance
+      - PublicDnsName
