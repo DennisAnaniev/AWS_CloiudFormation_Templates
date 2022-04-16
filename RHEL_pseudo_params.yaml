@@ -8,8 +8,8 @@ Resources:
         - Key: "Name"
           Value: !Join
               - ""
-              - "EC2 Instance"
-              - !Ref AWS::Region
+              - - "EC2 Instance "
+                - !Ref AWS::Region
       SecurityGroups:
         - !Ref AllowSSHtoEC2Instance
 
